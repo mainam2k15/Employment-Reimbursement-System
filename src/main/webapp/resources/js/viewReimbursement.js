@@ -3,13 +3,11 @@
  */
 
 window.onload = function(){
-	console.log("loading");
 	document.getElementById("pending").addEventListener('click', loadPendingReimb, false);
 	document.getElementById("resolved").addEventListener('click', loadResolvedReimb, false);
 }
 
 function loadPendingReimb(){
-	console.log("pending");
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 		if(xhr.readyState == 4 && xhr.status ==200){
@@ -39,14 +37,14 @@ function loadResolvedReimb(){
 
 //src: https://stackoverflow.com/a/27814032
 $.makePendingTable = function (mydata) {
-    var table = $('<table border=1>');
-    var tblHeader = "<tr>";
+    var table = $('<table border=1 class=\"table table-striped table-bordered\">');
+    var tblHeader = "<thead><tr>";
     tblHeader += "<th style=\"text-align:center\">Reimbursement_Id</th>";
     tblHeader += "<th style=\"text-align:center\">Reimbursement_Type</th>";
     tblHeader += "<th style=\"text-align:center\">Amount</th>";
     tblHeader += "<th style=\"text-align:center\">Submitted</th>";
     tblHeader += "<th style=\"text-align:center\">Description</th>";
-    tblHeader += "</tr>";
+    tblHeader += "</tr></thead><tbody>";
     $(tblHeader).appendTo(table);
 
     for(i = 0; i < Object.keys(mydata).length; i++){
@@ -59,13 +57,13 @@ $.makePendingTable = function (mydata) {
     	TableRow += "</tr>";
     	$(table).append(TableRow);
     }
-
+    $(table).append("</tbody>");
     return ($(table));
 };
 
 $.makeResolvedTable = function (mydata) {
-    var table = $('<table border=1>');
-    var tblHeader = "<tr>";
+    var table = $('<table border=1 class=\"table table-striped table-bordered\">');
+    var tblHeader = "<thead><tr>";
     tblHeader += "<th style=\"text-align:center\">Reimbursement_Id</th>";
     tblHeader += "<th style=\"text-align:center\">Reimbursement_Type</th>";
     tblHeader += "<th style=\"text-align:center\">Amount</th>";
@@ -74,7 +72,7 @@ $.makeResolvedTable = function (mydata) {
     tblHeader += "<th style=\"text-align:center\">Resolver_Name</th>";
     tblHeader += "<th style=\"text-align:center\">Status</th>";
     tblHeader += "<th style=\"text-align:center\">Resolved</th>";
-    tblHeader += "</tr>";
+    tblHeader += "</tr></thead><tbody>";
     $(tblHeader).appendTo(table);
 
     for(i = 0; i < Object.keys(mydata).length; i++){
@@ -90,6 +88,6 @@ $.makeResolvedTable = function (mydata) {
     	TableRow += "</tr>";
     	$(table).append(TableRow);
     }
-
+    $(table).append("</tbody>");
     return ($(table));
 };

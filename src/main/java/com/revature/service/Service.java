@@ -1,8 +1,11 @@
 package com.revature.service;
 
+import java.sql.Blob;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.fileupload.FileItem;
 
 import com.revature.dao.ReimbursementDao;
 import com.revature.dao.ReimbursementDaoImpl;
@@ -38,9 +41,9 @@ public class Service {
 		return matcher.find();
 	}
 
-	public void addReimbursement(Reimbursement rec){
+	public void addReimbursement(Reimbursement rec, FileItem file){
 		ReimbursementDao reimbDao = new ReimbursementDaoImpl();
-		reimbDao.addReimbursementRecord(rec);
+		reimbDao.addReimbursementRecord(rec, file);
 	}
 	
 	public PendingReimbursementDto convertToPendingReimbursement(Reimbursement r) {
@@ -115,5 +118,10 @@ public class Service {
 	
 	public void denyReimb(Reimbursement r, int resolver_id){
 		new ReimbursementDaoImpl().denyReimbursementById(r, resolver_id);
+	}
+	
+	public Blob getBlobById(Reimbursement r){
+		Blob result = new ReimbursementDaoImpl().getBlobById(r);
+		return result;
 	}
 }

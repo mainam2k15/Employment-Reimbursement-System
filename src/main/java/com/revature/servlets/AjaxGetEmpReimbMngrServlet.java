@@ -35,7 +35,6 @@ public class AjaxGetEmpReimbMngrServlet extends HttpServlet{
 		Object obj = mySet.toArray()[0];
 		
 		Employee empName = (Employee) jackson.readValue(((String)obj), Employee.class);
-		System.out.println(empName);
 		
 		//employee object now has the name from the select box
 		//get all reimbursements from this employee

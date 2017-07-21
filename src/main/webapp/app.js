@@ -3,7 +3,6 @@
  */
 
 window.onload = function(){
-	console.log("html loaded");
 	loadNavbar();
 }
 
@@ -13,8 +12,10 @@ function loadNavbar(){
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState == 4 && xhr.status == 200){
 			document.getElementById("navbar").innerHTML = xhr.responseText;
-//			document.getElementById('home').addEventListener('click', loadTxView, false);
-//			document.getElementById('home2').addEventListener('click', loadTxView, false);
+			document.getElementById("view").classList.add("jumbotron");
+			$(view).append("<h1 class=\"display-5\" style=\"text-align:center\">Welcome to the manager homepage!</h1>");
+			document.getElementById('home').addEventListener('click', loadHomeView, false);
+			document.getElementById('home2').addEventListener('click', loadHomeView, false);
 			document.getElementById('employeeView').addEventListener('click', loadEmployeeView, false);
 			document.getElementById('reimbursementView').addEventListener('click', loadReimbursementView, false);
 		}
@@ -24,9 +25,22 @@ function loadNavbar(){
 	xhr.send();
 }
 
+function loadHomeView(){
+	document.getElementById("view").innerHTML = "";
+	document.getElementById("home2").classList.add("active");
+	document.getElementById("reimbursementView").classList.remove("active");
+	document.getElementById("employeeView").classList.remove("active");
+	document.getElementById("cont").classList.add("container");
+	document.getElementById("view").classList.add("jumbotron");
+	$(view).append("<h1 class=\"display-5\" style=\"text-align:center\">Welcome to the manager homepage!</h1>");
+}
+
 function loadEmployeeView(){
-	console.log("loading all employees");
 	
+	document.getElementById("cont").classList.remove("container");
+	document.getElementById("view").innerHTML = "";
+	document.getElementById("view").classList.remove("jumbotron");
+	document.getElementById("message").innerHTML = "";
 	var xhr = new XMLHttpRequest();
 	
 	xhr.onreadystatechange = function(){
@@ -49,6 +63,8 @@ function loadEmployeeView(){
 }
 
 function loadReimbursementView(){
+	document.getElementById("cont").classList.remove("container");
+	document.getElementById("view").classList.remove("jumbotron");
 	var xhr = new XMLHttpRequest();
 	
 	xhr.onreadystatechange = function(){
@@ -65,6 +81,7 @@ function loadReimbursementView(){
 			document.getElementById("empReimb").addEventListener('click', loadEmployeeReimbMngrView, false);
 			document.getElementById("approve").addEventListener('click', approveReimbursement, false);
 			document.getElementById("deny").addEventListener('click', denyReimbursement, false);
+			document.getElementById("viewReceipts").addEventListener('click', loadReceipt, false);
 			
 			document.getElementById("approve").disabled = true;
 			document.getElementById("deny").disabled = true;
@@ -125,6 +142,7 @@ function loadEmployeeReimbMngrView(){
 	
 	document.getElementById("approve").disabled = true;
 	document.getElementById("deny").disabled = true;
+	document.getElementById("message").innerHTML = "";
 	
 	var selBox = document.getElementById("employeeName");
 	var empName = selBox.options[selBox.selectedIndex].text;
@@ -152,6 +170,21 @@ function loadEmployeeReimbMngrView(){
 	xhr.send(emp);
 }
 
+function loadReceipt(){
+
+	var rec = document.getElementsByName("receipt");
+	var reimbId;
+	
+	for(var i = 0; i < rec.length; i++){
+	    if(rec[i].checked){
+	        reimbId = rec[i].getAttribute("data-reimb_id");
+	    }
+	}
+	
+	document.getElementById("imgReceipt").setAttribute("href", "displayReceipt?r_id=" + reimbId);
+	
+}
+
 function populateEmployeeDroplist(){
 	
 	var select = document.getElementById('employeeName');
@@ -176,7 +209,7 @@ function populateEmployeeDroplist(){
 
 function approveReimbursement(){
 	
-	var reimb = $('input:checked');
+	var reimb = $("input:checkbox:checked");
 	
 	var reimbIndex = [];
 	
@@ -214,7 +247,7 @@ function approveReimbursement(){
 
 function denyReimbursement(){
 	
-	var reimb = $('input:checked');
+	var reimb = $("input:checkbox:checked");
 	
 	var reimbIndex = [];
 	
@@ -252,13 +285,13 @@ function denyReimbursement(){
 
 
 $.makeEmployeeTable = function (mydata) {
-    var table = $('<table border=1 style=\"margin:auto;\">');
-    var tblHeader = "<tr>";
+    var table = $('<table border=1 style=\"margin:auto;\" class=\"table table-striped table-bordered\">');
+    var tblHeader = "<thead><tr>";
     tblHeader += "<th style=\"text-align:center\">Employee_Id</th>";
     tblHeader += "<th style=\"text-align:center\">Email</th>";
     tblHeader += "<th style=\"text-align:center\">First Name</th>";
     tblHeader += "<th style=\"text-align:center\">Last Name</th>";
-    tblHeader += "</tr>";
+    tblHeader += "</tr></thead><tbody>";
     $(tblHeader).appendTo(table);
 
     for(i = 0; i < Object.keys(mydata).length; i++){
@@ -270,26 +303,28 @@ $.makeEmployeeTable = function (mydata) {
     	TableRow += "</tr>";
     	$(table).append(TableRow);
     }
-
+    $(table).append("</tbody>");
     return ($(table));
 };
 
 $.makePendingTable = function (mydata) {
-    var table = $('<table border=1 style=\"margin: auto;\">');
-    var tblHeader = "<tr>";
-    tblHeader += "<th> </th>"
+    var table = $('<table border=1 style=\"margin: auto;\" class=\"table table-striped table-bordered\">');
+    var tblHeader = "<thead><tr>";
+    tblHeader += "<th style=\"text-align:center\"> Approve/Deny </th>"
+    tblHeader += "<th style=\"text-align:center\"> Receipt </th>"
     tblHeader += "<th style=\"text-align:center\">Reimb_Id</th>";
     tblHeader += "<th style=\"text-align:center\">Author</th>";
     tblHeader += "<th style=\"text-align:center\">Reimb_Type</th>";
     tblHeader += "<th style=\"text-align:center\">Amount</th>";
     tblHeader += "<th style=\"text-align:center\">Submitted</th>";
     tblHeader += "<th style=\"text-align:center; width: 55%;\">Description</th>";
-    tblHeader += "</tr>";
+    tblHeader += "</tr></thead><tbody>";
     $(tblHeader).appendTo(table);
 
     for(i = 0; i < Object.keys(mydata).length; i++){
     	var TableRow = "<tr>";
-    	TableRow += "<td><input type=\"checkbox\" name=\"" + i + "\" /></td>";
+    	TableRow += "<td style=\"text-align:center\"><input type=\"checkbox\" name=\"" + i + "\" /></td>";
+    	TableRow += "<td style=\"text-align:center\"><input data-reimb_id=\"" + mydata[i]['reimbursement_Id'] + "\" type=\"radio\" name=\"receipt\"\" /></td>";
     	TableRow += "<td style=\"text-align:center\">" + mydata[i]['reimbursement_Id'] + "</td>";
     	TableRow += "<td style=\"text-align:center\">" + mydata[i]['author'] + "</td>";
     	TableRow += "<td style=\"text-align:center\">" + mydata[i]['reimbursement_Type'] + "</td>";
@@ -299,13 +334,14 @@ $.makePendingTable = function (mydata) {
     	TableRow += "</tr>";
     	$(table).append(TableRow);
     }
-
+    $(table).append("</tbody>");
     return ($(table));
 };
 
 $.makeResolvedTable = function (mydata) {
-    var table = $('<table border=1 style=\"margin: auto;\">');
-    var tblHeader = "<tr>";
+    var table = $('<table border=1 style=\"margin: auto;\" class=\"table table-striped table-bordered\">');
+    var tblHeader = "<thead><tr>";
+    tblHeader += "<th style=\"text-align:center\"> Receipt </th>"
     tblHeader += "<th style=\"text-align:center\">Reimb_Id</th>";
     tblHeader += "<th style=\"text-align:center\">Author</th>";
     tblHeader += "<th style=\"text-align:center\">Reimb_Type</th>";
@@ -315,11 +351,12 @@ $.makeResolvedTable = function (mydata) {
     tblHeader += "<th style=\"text-align:center\">Resolver</th>";
     tblHeader += "<th style=\"text-align:center\">Status</th>";
     tblHeader += "<th style=\"text-align:center\">Resolved</th>";
-    tblHeader += "</tr>";
+    tblHeader += "</tr></thead><tbody>";
     $(tblHeader).appendTo(table);
 
     for(i = 0; i < Object.keys(mydata).length; i++){
     	var TableRow = "<tr>";
+    	TableRow += "<td style=\"text-align:center\"><input data-reimb_id=\"" + mydata[i]['reimbursement_Id'] + "\" type=\"radio\" name=\"receipt\"\" /></td>";
     	TableRow += "<td style=\"text-align:center\">" + mydata[i]['reimbursement_Id'] + "</td>";
     	TableRow += "<td style=\"text-align:center\">" + mydata[i]['author'] + "</td>";
     	TableRow += "<td style=\"text-align:center\">" + mydata[i]['reimbursement_type'] + "</td>";
@@ -332,6 +369,7 @@ $.makeResolvedTable = function (mydata) {
     	TableRow += "</tr>";
     	$(table).append(TableRow);
     }
+    $(table).append("</tbody>");
 
     return ($(table));
 };

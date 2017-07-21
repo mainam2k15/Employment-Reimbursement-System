@@ -1,5 +1,7 @@
 package com.revature.dao;
 
+import java.io.IOException;
+import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,6 +12,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.servlet.http.Part;
+
+import org.apache.commons.fileupload.FileItem;
 
 import com.revature.pojo.Reimbursement;
 import com.revature.pojo.User;
@@ -23,8 +29,8 @@ public class ReimbursementDaoImpl implements ReimbursementDao{
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
 	
 	@Override
-	public void addReimbursementRecord(Reimbursement r) {
-		String sql = "INSERT INTO reimbursement(r_author, r_status_id, r_type_id, r_amount, r_submitted, r_description) VALUES(?, ?, ?, ?, ?, ?)";
+	public void addReimbursementRecord(Reimbursement r, FileItem file) {
+		String sql = "INSERT INTO reimbursement(r_author, r_status_id, r_type_id, r_amount, r_submitted, r_description, r_receipt) VALUES(?, ?, ?, ?, ?, ?, ?)";
 		try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, r.getAuthor());
@@ -33,8 +39,11 @@ public class ReimbursementDaoImpl implements ReimbursementDao{
 			ps.setDouble(4, r.getAmount());
 			ps.setTimestamp(5, r.getSubmitted());
 			ps.setString(6, r.getDescription());
+			ps.setBinaryStream(7, file.getInputStream(), (int) file.getSize());
 			ps.executeUpdate();
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -111,7 +120,6 @@ public class ReimbursementDaoImpl implements ReimbursementDao{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println(resolved_list);
 		return resolved_list;
 	}
 
@@ -189,6 +197,25 @@ public class ReimbursementDaoImpl implements ReimbursementDao{
 			e.printStackTrace();
 		}
 		
+	}
+
+	@Override
+	public Blob getBlobById(Reimbursement r) {
+		
+		Blob resultBlob = null;
+		
+		String sql = "SELECT r_receipt FROM reimbursement WHERE r_id = ?";
+		try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, r.getR_id());
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			resultBlob = rs.getBlob("r_receipt");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+	
+		return resultBlob;
 	}
 
 }

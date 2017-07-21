@@ -13,6 +13,8 @@
 	rel="stylesheet">
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 
 <body background="resources/img/bg.png">
 	<nav class="navbar navbar-inverse">
@@ -39,13 +41,19 @@
 				<div class="row">
 					<div class="col-md-2"></div>
 					<div class="col-md-8">
-						<form method="POST" action="submitReimbursement">
+						<form method="POST" action="submitReimbursement" enctype="multipart/form-data">
 							<div class="form-group">
-								<input type="text" class="form-control"
-									placeholder="Reimbursement Type" name="r_type" required>
+								<select class="selectpicker" name="r_type">
+								  <option>Lodging</option>
+								  <option>Training</option>
+								  <option>Travel</option>
+								  <option>Supplies</option>
+								  <option>Food</option>
+								</select>
+
 							</div>
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Amount"
+								<input type="number" step="any" class="form-control" placeholder="Amount"
 									name="amount" required>
 							</div>
 							<div class="form-group">

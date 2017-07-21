@@ -32,10 +32,7 @@ public class AjaxApproveReimbServlet extends HttpServlet{
 		
 		Object obj = mySet.toArray()[0];
 		
-		System.out.println(obj);
-		
 		Index in = (Index) jackson.readValue(((String)obj), Index.class);
-		System.out.println("Checked Indexes: " + in);
 		
 		//need to get pending list and match indexes
 		List<Reimbursement> pending_list = new Service().retrieveAllPendingReimb();

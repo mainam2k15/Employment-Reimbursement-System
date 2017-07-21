@@ -58,15 +58,17 @@
 								</div>
 							</div>
 						</div>
-						<br> <br>
-						<div id="view">
-							<table id="r_table">
-							</table>
-						</div>
 					</div>
 					<div class="col-md-1"></div>
 				</div>
 			</div>
+		</div>
+	</div>
+<br> <br>
+	<div id="view">
+		<div class="container">
+			<table id="r_table">
+			</table>
 		</div>
 	</div>
 
