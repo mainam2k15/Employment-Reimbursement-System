@@ -13,14 +13,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.http.Part;
-
 import org.apache.commons.fileupload.FileItem;
 
 import com.revature.pojo.Reimbursement;
 import com.revature.pojo.User;
-
-import oracle.jdbc.internal.OracleTypes;
 
 public class ReimbursementDaoImpl implements ReimbursementDao{
 
