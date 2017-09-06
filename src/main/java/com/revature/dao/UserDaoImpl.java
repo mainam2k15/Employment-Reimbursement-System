@@ -19,6 +19,12 @@ public class UserDaoImpl implements UserDao{
 	public User getUserByEmailPass(User curr){
 		User resultUser = null;
 		String sql = "SELECT u.u_id, u.u_email, u.u_password, u.u_fname, u.u_lname, r.u_role FROM Users u JOIN u_role r ON u.u_role_id = r.u_role_id WHERE u.u_email = ? AND u.u_password = ?";
+		try {
+			Class.forName("oracle.jdbc.OracleDriver");
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, curr.getEmail());
